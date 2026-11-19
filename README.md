@@ -1,7 +1,6 @@
 # Standortspiel – wann ist eine Aufteilung der Fixkosten stabil? – Streamlit-Demo
 
-<!-- TODO nach dem Deploy: direkt hierher den Live-Link setzen (Leerzeile davor und danach):
-**[→ Demo live ausprobieren](https://sebastianhanisch-standortspiel-demo.streamlit.app/)** -->
+**[→ Demo live ausprobieren](https://sebastianhanisch-standortspiel-demo.streamlit.app/)**
 
 Diese Demo gehört zur Linie [Koalitionen und Teilen](https://sebastianhanisch.net/konzepte-koalitionen-teilen.html). Sie steht neben `kern-demo` (Kern, Least Core und Nukleolus bei der Tour von Spediteuren),
 `shapley-demo` (der Shapley-Wert), `standortplanung-demo` (Standortproblem ohne Kapazität als Optimierung, mit der LP-Lücke) und `moulin-demo` (Kostenteilung bei privaten Werten). Hier teilen **Kunden** die Fixkosten von Standorten,
