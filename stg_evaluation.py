@@ -60,7 +60,7 @@ class Analysis:
     prices: np.ndarray          # Duallösung der Relaxierung
     opened: np.ndarray          # y_j einer Optimallösung der Relaxierung
     gap: float                  # c(N)/LP
-    subsidy: float              # Preis der Stabilität c(N) - LP
+    subsidy: float              # Cost of Stability c(N) - LP
     alloc: dict                 # Name -> Aufteilung
     kz: dict                    # Name -> Kennzahlen
     gap_empty: bool             # c(N) - LP > GAP_TOL (das Kriterium ohne 2^n Bedingungen)
@@ -258,7 +258,7 @@ def verdict_core(eps: float, cn: float, gap: float, subsidy: float, n: int) -> t
     if eps > C.TOL:
         return "warning", (f"**Der Kern ist leer.** Bei jeder Aufteilung gibt es mindestens eine Koalition, die um mindestens ε* = {de(eps, 3)} ({pct(eps / cn)} von c(N) = {de(cn)}) "
                            f"mehr zahlt, als sie allein müsste, und deshalb austritt. Die Ganzzahligkeitslücke c(N)/LP ist {de(gap, 4)} und damit größer als 1; "
-                           f"ein Kern entstünde erst mit einem Zuschuss von {de(subsidy, 3)} (Preis der Stabilität).")
+                           f"ein Kern entstünde erst mit einem Zuschuss von {de(subsidy, 3)} (Cost of Stability).")
     if eps >= -C.TOL:
         return "info", (f"**Der Kern ist nicht leer, hat aber keinen Spielraum** (ε* = {de(0.0, 3)}): jede Aufteilung im Kern lässt mindestens eine echte Koalition genau bei ihren Alleinkosten. "
                         f"Die Lücke c(N)/LP ist {de(gap, 4)}.")

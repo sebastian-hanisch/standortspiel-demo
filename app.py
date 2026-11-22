@@ -139,9 +139,9 @@ with st.expander("So funktioniert ein Standortspiel", expanded=True):
 | **Kern** | Aufteilungen, bei denen keine Koalition mehr zahlt, als sie allein müsste | LP über alle 2^n − 2 echten Koalitionen |
 | **Least-Core-Wert ε\\*** | größter Überschuss x(S) − c(S), den man bei bester Aufteilung nicht unterschreiten kann; positiv heißt Kern leer | LP: kleinstes ε mit x(S) ≤ c(S) + ε |
 | **Nukleolus** | die Aufteilung, die den größten Überschuss minimiert, dann den zweitgrößten und so weiter | Folge von LP (Maschler, Peleg, Shapley) |
-| **Ganzzahligkeitslücke** | c(N) geteilt durch den Wert der Relaxierung, in der Standorte halb offen sein dürfen | LP mit n·m + m Variablen |
+| **Ganzzahligkeitslücke (Integrality Gap)** | c(N) geteilt durch den Wert der Relaxierung, in der Standorte halb offen sein dürfen | LP mit n·m + m Variablen |
 | **Multiplikativer Least-Core-Wert ρ\\*** | kleinster Faktor ρ, mit dem alle echten Koalitionen x(S) ≤ ρ · c(S) einhalten; ρ\\* ≤ 1 heißt Kern nicht leer. Bei leerem Kern ist ρ\\* die Ganzzahligkeitslücke | LP: kleinstes ρ mit x(S) ≤ ρ · c(S); angezeigt wird max(ρ\\*, 1) |
-| **Preis der Stabilität (Zuschuss)** | kleinster Betrag Δ, den ein Dritter übernehmen müsste, damit die Kunden nur c(N) − Δ aufteilen und ein Kern entsteht; bei nichtleerem Kern 0 | c(N) minus Wert der Relaxierung |
+| **Cost of Stability (Zuschuss)** | kleinster Betrag Δ, den ein Dritter übernehmen müsste, damit die Kunden nur c(N) − Δ aufteilen und ein Kern entsteht; bei nichtleerem Kern 0 | c(N) minus Wert der Relaxierung |
         """
     )
 
@@ -156,7 +156,7 @@ with st.sidebar:
     st.markdown("**Lage**")
     lage = st.selectbox(
         "Lage der Kunden und Standorte", C.LAGEN, key="lage_select",
-        help="Zufall: gleichverteilt im Quadrat 100 × 100. Zwei Ballungen: die Kunden liegen um zwei Zentren. Ring: Kunden im Abstand s auf einem Kreis, die Standorte in den Kantenmitten (n = 3 ist das Dreieck).",
+        help="Zufall: gleichverteilt im Quadrat 100 × 100. Zwei Ballungen (Cluster): die Kunden liegen um zwei Zentren. Ring: Kunden im Abstand s auf einem Kreis, die Standorte in den Kantenmitten (n = 3 ist das Dreieck).",
     )
     ring = lage == C.LAGE_RING
     n = st.slider("Kunden n", *bounds("n_slider"), key="n_slider", help="Wie viele Kunden (Spieler) es gibt. Die Zahl der Koalitionen wächst mit 2^n.")
@@ -190,7 +190,7 @@ c3.metric("Ganzzahligkeitslücke c(N)/LP", ev.de(a.gap, 4), help="1 heißt: kein
 c4, c5, c6 = st.columns(3)
 c4.metric("Kern", "leer" if a.core_empty else "nicht leer", help="Least-Core-LP über alle echten Koalitionen: leer, wenn ε* größer als 0 ist.")
 c5.metric("Least-Core-Wert ε*", ev.de(a.eps, 3) if n_eff > 1 else "–", help="Kleinster größter Überschuss über alle Aufteilungen. Positiv: Kern leer. Null: Kern ohne Spielraum.")
-c6.metric("Preis der Stabilität c(N) − LP", ev.de(a.subsidy, 3), help="Zuschuss: kleinster Betrag, den ein Dritter übernehmen müsste, damit die Kunden nur c(N) minus diesen Betrag aufteilen und ein Kern entsteht. Gleich c(N) − LP; bei nichtleerem Kern 0.")
+c6.metric("Cost of Stability c(N) − LP", ev.de(a.subsidy, 3), help="Zuschuss: kleinster Betrag, den ein Dritter übernehmen müsste, damit die Kunden nur c(N) minus diesen Betrag aufteilen und ein Kern entsteht. Gleich c(N) − LP; bei nichtleerem Kern 0.")
 left, right = st.columns([3, 2])
 with left:
     st.plotly_chart(V.build_map(a), width="stretch", key="map_main")
@@ -223,7 +223,7 @@ st.markdown(
 Die **Relaxierung** darf Standorte halb öffnen und Kunden auf mehrere Standorte verteilen. Ihre **Duallösung** gibt jedem Kunden einen Preis v_i; die Preise summieren sich zum Wert der Relaxierung.
 Zwei Aussagen (Beweisskizze im 📐-Expander): **(1)** Jede Aufteilung im Kern ist dual zulässig, also ist c(N) höchstens der Wert der Relaxierung, und der ist nie größer als c(N): im Kern gilt c(N) = LP.
 **(2)** Ist c(N) = LP, dann liegen die Preise v selbst im Kern. Darum ist der Kern **genau dann leer, wenn c(N) größer als der Wert der Relaxierung ist**. Zwei Folgen: Der multiplikative Least-Core-Wert
-ρ\\* (kleinstes ρ mit x(S) ≤ ρ c(S)) ist bei leerem Kern die Lücke selbst, und der **Preis der Stabilität** ist c(N) − LP. Das ist der **Zuschuss**: der kleinste Betrag Δ, den ein Dritter übernehmen müsste,
+ρ\\* (kleinstes ρ mit x(S) ≤ ρ c(S)) ist bei leerem Kern die Lücke selbst, und der **Cost of Stability** ist c(N) − LP. Das ist der **Zuschuss**: der kleinste Betrag Δ, den ein Dritter übernehmen müsste,
 damit die Kunden nur c(N) − Δ aufteilen und ein Kern entsteht. Wer ihn zahlt, sagt das Modell nicht.
 """
 )
@@ -235,7 +235,7 @@ with g2:
     st.plotly_chart(V.build_opened(a), width="stretch", key="opened_chart")
     st.caption("Wie die Relaxierung Standorte öffnet (eine Optimallösung, bei Gleichstand nicht eindeutig). Rot umrandet: ganzzahlig offene Standorte der großen Koalition.")
 st.markdown(
-    f"Diese Instanz: ρ\\* = {ev.de(a.rho_star, 4)} (mindestens 1 gesetzt), Lücke {ev.de(a.gap, 4)}, Preis der Stabilität {ev.de(a.subsidy, 3)} bei c(N) = {ev.de(a.cn, 2)} und LP = {ev.de(a.lp, 2)}."
+    f"Diese Instanz: ρ\\* = {ev.de(a.rho_star, 4)} (mindestens 1 gesetzt), Lücke {ev.de(a.gap, 4)}, Cost of Stability {ev.de(a.subsidy, 3)} bei c(N) = {ev.de(a.cn, 2)} und LP = {ev.de(a.lp, 2)}."
 )
 group_table = ev.group_rows(a)
 if group_table:
@@ -455,7 +455,7 @@ with st.expander("📐 Mathematische Formulierung"):
         "- **Ganzzahligkeitslücke** c(N)/LP: Kosten der großen Koalition geteilt durch den Wert der Relaxierung, in der Standorte halb offen sein dürfen. Sie ist mindestens 1.\n"
         "- **ρ\\*** (multiplikativer Least-Core-Wert): das kleinste ρ, für das es eine Aufteilung mit x(N) = c(N) und x(S) ≤ ρ · c(S) für alle echten Koalitionen gibt. Der Kern ist nicht leer genau dann, wenn ρ\\* ≤ 1; "
         "bei leerem Kern ist ρ\\* = c(N)/LP, bei nichtleerem Kern höchstens 1. Die App zeigt max(ρ\\*, 1).\n"
-        "- **Preis der Stabilität** (Zuschuss) Δ: das kleinste Δ ≥ 0, für das es eine Aufteilung mit x(N) = c(N) − Δ und x(S) ≤ c(S) für alle echten Koalitionen gibt; es ist c(N) − LP, bei nichtleerem Kern 0. "
+        "- **Cost of Stability** (Zuschuss) Δ: das kleinste Δ ≥ 0, für das es eine Aufteilung mit x(N) = c(N) − Δ und x(S) ≤ c(S) für alle echten Koalitionen gibt; es ist c(N) − LP, bei nichtleerem Kern 0. "
         "Ein Rechenwert des Modells: wer den Zuschuss zahlt, sagt es nicht."
     )
     st.markdown("**Koalitionswert.** Eine Koalition wählt die billigste nichtleere Standortmenge O:")
