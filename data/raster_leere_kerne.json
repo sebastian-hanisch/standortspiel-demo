@@ -1,5 +1,5 @@
 {
- "generator_hash": "2f4eefa861a8272e6e410f483349aa4305ef43832ba7474940be61d59dc9532b",
+ "generator_hash": "337de18c9ff6c802d5e74cb3eb2f65e4468dcdaf7e66da3cc46b7ef51f7a6cb8",
  "params": {
   "n": [
    5,
@@ -1372,5 +1372,5 @@
    "max_gap": 1.0000000000000002
   }
  ],
- "seconds": 128.5
+ "seconds": 100.2
 }

@@ -72,7 +72,7 @@ def integer_optimum_milp(d: np.ndarray, fix: np.ndarray, time_limit: float = 120
             vals += [1.0, -1.0]
             hi[r] = np.inf
     a = coo_matrix((vals, (rows, cols)), shape=(n + n * m, nv)).tocsr()
-    res = milp(cost, constraints=LinearConstraint(a, lo, hi), integrality=np.r_[np.ones(m), np.zeros(n * m)], bounds=Bounds(0, 1), options={"time_limit": time_limit})
+    res = milp(cost, constraints=LinearConstraint(a, lo, hi), integrality=np.r_[np.ones(m), np.zeros(n * m)], bounds=Bounds(0, 1), options={"mip_rel_gap": 0.0, "time_limit": time_limit})
     if res.x is None:
         raise RuntimeError(res.message)
     return float(res.fun), res.status == 0
@@ -85,7 +85,12 @@ def dual_violation(d: np.ndarray, fix: np.ndarray, v: np.ndarray) -> float:
 
 def gap(d: np.ndarray, fix: np.ndarray) -> tuple[float, float, float]:
     """(c(N), LP-Wert, Lücke c(N)/LP). Der Kern ist genau dann leer, wenn c(N) - LP > 0 (Toleranz GAP_TOL)."""
-    cn = integer_optimum(d, fix)[0] if d.shape[1] <= C.M_ENUM_MAX else integer_optimum_milp(d, fix)[0]
+    if d.shape[1] <= C.M_ENUM_MAX:
+        cn = integer_optimum(d, fix)[0]
+    else:
+        cn, bewiesen = integer_optimum_milp(d, fix)
+        if not bewiesen:
+            raise RuntimeError("c(N) wurde innerhalb der Zeitgrenze nicht als Optimum bewiesen")
     lp = lp_relaxation(d, fix).value
     return cn, lp, cn / lp if lp > 0 else 1.0
 
